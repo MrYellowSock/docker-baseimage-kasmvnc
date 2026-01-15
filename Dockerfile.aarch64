@@ -291,11 +291,13 @@ RUN \
     libfontenc1 \
     libfreetype6 \
     libgbm1 \
+    libcpuid16 \
     libgcrypt20 \
     libgl1-mesa-dri \
     libglu1-mesa \
     libgnutls30 \
     libgomp1 \
+    libtbb12 \
     libhash-merge-simple-perl \
     liblist-moreutils-perl \
     libnotify-bin \
