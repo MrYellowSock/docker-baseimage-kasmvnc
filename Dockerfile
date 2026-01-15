@@ -30,7 +30,7 @@ RUN \
 
 FROM ghcr.io/linuxserver/baseimage-debian:bookworm AS buildstage
 
-ARG KASMVNC_COMMIT="e04731870baebd2784983fb48197a2416c7d3519"
+ARG KASMVNC_COMMIT="619f53a909f126af9569d580966745a2d465b9f0"
 
 COPY --from=wwwstage /build-out /www
 
@@ -49,6 +49,9 @@ RUN \
     grep \
     kbd \
     libavcodec-dev \
+    libcpuid-dev \
+    libavformat-dev \
+    libswscale-dev \
     libdrm-dev \
     libepoxy-dev \
     libgbm-dev \
@@ -60,7 +63,9 @@ RUN \
     libpng-dev \
     libssl-dev \
     libtiff-dev \
+    libtbb-dev \
     libtool \
+    libsharpyuv-dev \
     libwebp-dev \
     libx11-dev \
     libxau-dev \
@@ -111,7 +116,7 @@ RUN \
 
 RUN \
   echo "**** build kasmvnc ****" && \
-  git clone https://github.com/kasmtech/KasmVNC.git src && \
+  git clone https://github.com/MrYellowSock/KasmVNC.git src && \
   cd /src && \
   git checkout -f ${KASMVNC_COMMIT} && \
   sed -i \
