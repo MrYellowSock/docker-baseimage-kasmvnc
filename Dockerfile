@@ -1,38 +1,39 @@
 # syntax=docker/dockerfile:1
 
-FROM node:12-buster AS wwwstage
+FROM node:20-buster AS wwwstage
 
-ARG KASMWEB_RELEASE="46412d23aff1f45dffa83fafb04a683282c8db58"
+ARG KASMVNC_COMMIT="619f53a909f126af9569d580966745a2d465b9f0"
 
 RUN \
-  echo "**** build clientside ****" && \
-  export QT_QPA_PLATFORM=offscreen && \
-  export QT_QPA_FONTDIR=/usr/share/fonts && \
-  mkdir /src && \
+  echo "**** clone and build kasmweb ****" && \
+  git clone --recurse-submodules https://github.com/MrYellowSock/KasmVNC.git /src && \
   cd /src && \
-  wget https://github.com/kasmtech/noVNC/tarball/${KASMWEB_RELEASE} -O - \
-    | tar  --strip-components=1 -xz && \
+  git checkout -f ${KASMVNC_COMMIT} && \
+  git submodule update --init --recursive && \
+  cd /src/kasmweb && \
   npm install && \
-  npm run-script build
+  npm run build
 
 RUN \
   echo "**** organize output ****" && \
   mkdir /build-out && \
-  cd /src && \
+  cd /src/kasmweb && \
   rm -rf node_modules/ && \
-  cp -R ./* /build-out/ && \
+  cp -R ./dist/* /build-out/ && \
   cd /build-out && \
-  rm *.md && \
-  rm AUTHORS && \
+  rm -f *.md AUTHORS && \
   cp index.html vnc.html && \
   mkdir Downloads
 
+RUN \
+  echo "**** clean up ****" && \
+  cd /src && \
+  rm -rf kasmweb
 
 FROM ghcr.io/linuxserver/baseimage-debian:bookworm AS buildstage
 
-ARG KASMVNC_COMMIT="619f53a909f126af9569d580966745a2d465b9f0"
-
 COPY --from=wwwstage /build-out /www
+COPY --from=wwwstage /src /src
 
 RUN \
   echo "**** install build deps ****" && \
@@ -116,9 +117,7 @@ RUN \
 
 RUN \
   echo "**** build kasmvnc ****" && \
-  git clone https://github.com/MrYellowSock/KasmVNC.git src && \
   cd /src && \
-  git checkout -f ${KASMVNC_COMMIT} && \
   sed -i \
     -e '/find_package(FLTK/s@^@#@' \
     -e '/add_subdirectory(tests/s@^@#@' \
