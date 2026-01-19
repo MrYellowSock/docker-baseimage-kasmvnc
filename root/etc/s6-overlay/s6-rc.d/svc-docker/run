@@ -1,6 +1,6 @@
 #!/usr/bin/with-contenv bash
 
-# We need to wait for kclient to be full up as docker init breaks audio
+# Wait for services to be ready as docker init breaks audio
 sleep 5
 
 # Make sure this is a priv container
