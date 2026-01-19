@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<!-- This file replace index.html in the kasmweb(novnc) to corrects websocket path, add additional options-->
+	<!-- using SUBFOLDER to work with external reverse proxy is no longer needed. -->
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<title>KasmVNC</title>
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<style>
+		.vnc {
+			position: fixed;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			width: 100%;
+			height: 100%;
+			border: none;
+			margin: 0;
+			padding: 0;
+			overflow: hidden;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- Failed to get layout map: SecurityError: getLayoutMap() must be called from a top-level browsing context or allowed by the permission policy. proper ssl might solves it -->
+	<iframe class="vnc" allow="fullscreen *; keyboard-map *"></iframe>
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const iframe = document.querySelector('.vnc');
+			const currentPath = window.location.pathname
+				.replace(/^\/+/, '')
+				.replace(/\/+$/, '') + "/websockify";
+
+			let iframeSrc = 'vnc.html?autoconnect=1&resize=remote&clipboard_up=true&clipboard_down=true&clipboard_seamless=true&show_control_bar=true';
+			iframeSrc += '&path=' + encodeURIComponent(currentPath);
+			iframe.src = iframeSrc;
+		});
+	</script>
+</body>
+
+</html>
