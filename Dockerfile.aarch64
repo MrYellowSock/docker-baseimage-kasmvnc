@@ -2,7 +2,7 @@
 
 FROM node:20-buster AS wwwstage
 
-ARG KASMVNC_COMMIT="1e919269f2bd5c18379982e34316f722309baa92"
+ARG KASMVNC_COMMIT="69ac8c193d8fa6cf5e5cedb91608254866bc7b46"
 
 RUN \
   echo "**** clone and build kasmweb ****" && \
